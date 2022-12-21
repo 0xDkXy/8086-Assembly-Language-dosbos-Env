@@ -1,2 +1,4 @@
 *.swp
 *.AS~
+*.OBJ
+src/*.EXE
