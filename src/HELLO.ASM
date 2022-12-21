@@ -1,4 +1,4 @@
-stack segment stack
+stack segment 
     db 200 dup(0)
 stack ends
 

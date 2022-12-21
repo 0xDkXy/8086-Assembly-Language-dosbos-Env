@@ -8,6 +8,7 @@
 # hlsearch on (H) or off (h):
 ~h
 # Command Line History (newest to oldest):
+:wq
 :q
 :syntax on
 :set nu
@@ -21,20 +22,24 @@
 # Input Line History (newest to oldest):
 
 # Registers:
+""-	CHAR	0
+	stack
 
 # File marks:
-'0  8  8  C:\SRC\HELLO.ASM
-'1  1  0  C:\SRC\HELLO.ASM
+'0  1  13  C:\SRC\HELLO.ASM
+'1  8  8  C:\SRC\HELLO.ASM
 '2  14  0  C:\SRC\HELLO.ASM
 '3  17  10  C:\SRC\HELLO.ASM
 
 # Jumplist (newest first):
+-'  1  13  C:\SRC\HELLO.ASM
 -'  8  8  C:\SRC\HELLO.ASM
--'  1  0  C:\SRC\HELLO.ASM
 -'  14  0  C:\SRC\HELLO.ASM
 -'  17  10  C:\SRC\HELLO.ASM
 
 # History of marks within files (newest to oldest):
 
 > C:\SRC\HELLO.ASM
-	"	8	8
+	"	1	13
+	.	1	13
+	+	1	13
