@@ -1,0 +1,9 @@
+set nocompatible
+source $VIMRUNTIME/vimrc_.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+
+set rnu
+set cuc
+set cul
+
