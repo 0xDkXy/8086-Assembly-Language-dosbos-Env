@@ -2,7 +2,8 @@ assume cs:code, ds:data, ss:stack
 data segment
     istr0 byte 0ffh,0, 0ffh dup('$')
     istr1 byte 0ffh,0, 0ffh dup('$')
-    ostr byte 0ffh dup('$')
+    ostr0 byte 'matched!$'
+    ostr1 byte 'unmatched!$'
 data ends
 
 stack segment
@@ -26,14 +27,17 @@ start:
     mov bx, dx
     xor cx, cx
     mov cl, [bx] ; the loop of compared string
-    xor di, di ; clear di for count the position
 count:
-    inc di
     inc bx
     call comp_str
-    cmp ax, 1
     loop count
-    mov dx, offset ostr
+    cmp bp, 1
+    je match
+    mov dx, offset ostr1
+    jmp goon
+match: 
+    mov dx, offset ostr0
+goon:
     mov ah, 9
     int 21h
     mov ax, 4c00h
@@ -41,10 +45,7 @@ count:
 comp_str:
     push bx
     push cx
-    push di
-    xor ax, ax
     xor di, di
-    xor si, si
     xor cx, cx
     mov dx, offset istr1
     push bx
@@ -61,16 +62,14 @@ in_loop:
     pop bx
     cmp al, ah
     jne out1
-    xor ax, ax
     inc di
     inc si
     loop in_loop
-    mov ax, 1
+    mov bp, 1
 out1:
-    pop di
     pop cx
     pop bx
-    ret
+    retf
 
 displaystr:
 displaychr:
