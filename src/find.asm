@@ -67,9 +67,10 @@ in_loop:
     loop in_loop
     mov bp, 1
 out1:
+    nop
     pop cx
     pop bx
-    retf
+    ret
 
 displaystr:
 displaychr:
