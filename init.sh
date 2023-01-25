@@ -5,6 +5,6 @@ echo "copying dos config"
 cp -r ./dotfile/.dosbox ~/
 echo "Done!"
 cd ..
-mv ./AssemblyLanguageENV ./dos
+mv ./AssemblyLanguageEnv ./dos
 
 
