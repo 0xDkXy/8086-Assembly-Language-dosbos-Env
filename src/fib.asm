@@ -2,17 +2,17 @@
 assume cs:code, ds:data, ss:stack
 
 data segment
+    useless db 0ffh dup(0)
     input_int db 14, 0, 14 dup(0)
     int_128_0 db 1, 15 dup(0)
     int_128_1 db 1, 15 dup(0)
     int_128_2 db 16 dup(0)
-    int_128_3 db 16 dup(0)
     endl_str db 0ah, 0dh, '$'
+    dextable db '0123456789ABCDEF'
 data ends
 
 stack segment
-    dw 0ffh dup(0)
-    dw 0ffh dup(0)
+    db 0ffffh dup(0)
 stack ends
 
 code segment
@@ -22,7 +22,7 @@ start:
     mov es, ax
     mov ax, stack
     mov ss, ax
-    mov sp, 0ffh
+    mov sp, 0fffh
     ;===========
 
     lea ax, input_int
@@ -49,6 +49,7 @@ upper_1:
     mov dl, 032h
     int 21h
     call endl
+    jmp end_
 upper_2:
     sub cx, 2
 
@@ -65,11 +66,14 @@ div_main_loop:
     inc cx
 
     push ax
-    call check_zero ; check int_128_0 is zero or not
+    call check_zero ; check int_128_1 is zero or not
     pop ax
     cmp ax, 0
     jne div_main_loop
 
+    ;push cx
+    ;call print_hex
+    ;call endl
 ;print dex
 print_dex_loop:
     pop ax
@@ -79,14 +83,32 @@ print_dex_loop:
     int 21h
     loop print_dex_loop
 
-
 end_:
     mov ax, 4c00h
     int 21h
     
-    
-
 ;=====function area======
+print_hex:
+    push bp
+    mov bp, sp
+    push ax
+    push bx
+    push cx
+    push dx
+
+    mov ax, [bp+4]
+    add ax, 030h
+    mov dl, al
+    mov ah, 02h
+    int 21h
+    
+    pop dx
+    pop cx
+    pop bx
+    pop ax
+    pop bp
+    ret 2
+
 check_zero:
     push bp
     mov bp, sp
@@ -97,17 +119,13 @@ check_zero:
     mov cx, 0fh
     lea ax, int_128_1
     mov bx, ax
+    xor ax, ax
 loop_check_zero:
-    mov al, [bx]
-    cmp al, 0
-    jne __loop_check_zero_false
+    or al, [bx]
+    inc bx
     loop loop_check_zero
-
-    mov [bp+4], 0
-    jmp __check_zero_end
-__loop_check_zero_false:
     mov [bp+4], ax
-__check_zero_end:
+
     pop cx
     pop bx
     pop ax
