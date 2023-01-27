@@ -10,6 +10,10 @@ data segment
     asciitable byte 128 dup(0)
     input_text byte 0ffh, 0, 0ffh dup('$')
     digittable db '0123456789'
+    endl_str db 0ah, 0dh, '$'
+    digit_str db 'digit:', 0ah, 0dh, '$'
+    letter_str db 'letter:', 0ah, 0dh, '$'
+    other_str db 'other:', 0ah, 0dh, '$'
 data ends
 
 stack segment
@@ -31,67 +35,96 @@ start:
     lea ax, input_text
     push ax
     call get_char
+    call endl
 
     lea ax, input_text
     push ax
     call count
 
-    call print_char
-    ;call print_digit
-    ;call print_letter
+    lea ax, ostr1
+    push ax
+    call print
+    
+    lea ax, digit_str
+    push ax
+    call print
+    lea bx, digit
+    xor ax, ax
+    mov al, [bx]
+    push ax
+    call print_dex
+    call endl
+
+    lea ax, letter_str
+    push ax
+    call print
+    lea bx, letter
+    xor ax, ax
+    mov al, [bx]
+    push ax
+    call print_dex
+    call endl
+     
+    lea ax, other_str
+    push ax
+    call print
+    lea bx, char
+    xor ax, ax
+    mov al, [bx]
+    push ax
+    call print_dex
+    call endl
 
     mov ax , 4c00h
     int 21h
 
 ; ===========================
 ; function area
-print_char:
-    push ax
-    push bx
-    lea ax, char
-    mov bx, ax
-    xor ax, ax
-    mov al, [bx]
-    push ax
-    call print_dex
-    pop bx
-    pop ax
-    ret
-
-print_dex:
+print_dex: ; function to print dex
     push bp
     mov bp, sp
-    mov ax, [bp+4]
+    push ax
+    push bx
     push cx
     push dx
-    push bx
-    xor bx, bx
-    mov cx, 0ffh
+    mov ax,[bp+4] ; move target number to ax
     mov dl, 0ah
-    mov dx, sp ; keep sp
-loop_dex:
+    xor cx, cx
+    xor bx, bx
+div_0:
     div dl
-    push ah
+    mov bl, ah
     xor ah, ah
-    inc bx
+    push bx
+    inc cx
     cmp ax, 0
-    je out_dex
-    loop loop_dex
-out_dex:
-    mov cx, bx
-    push dx
+    jne div_0
+loop_pop:
     xor dx, dx
-loop_dex0:
-    pop dl
+    pop dx
+    add dx, 030h
     mov ah, 02h
     int 21h
-    loop loop_dex0
-    pop dx
-    pop bx
+    loop loop_pop
     pop dx
     pop cx
+    pop bx
+    pop ax
     pop bp
     ret 2
+;====print_dex End====
+
+endl: ; print \n
+    push ax
+    push dx
+    lea dx, endl_str
+    mov ah, 09h
+    int 21h
+    pop dx
+    pop ax
+    ret
+; endl end
+
 print:
     push bp
     mov bp, sp
@@ -218,6 +251,8 @@ inc_count:
     pop bx
     pop bp
     ret 2
+
+;======function area end========
 
 code ends
 end start
