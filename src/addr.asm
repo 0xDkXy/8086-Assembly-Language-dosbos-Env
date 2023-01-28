@@ -233,6 +233,7 @@ sort_list:
 
 sort_list_loop:
     push cx
+    push ax
     lea bx, number
     mov cx, 0
     mov cl, [bx]
@@ -254,6 +255,7 @@ sort_list_loop:
         
     loop sort_list_loop_inner
     
+    pop ax
     inc ax
     add dx, 28
     pop cx
